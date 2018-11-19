@@ -30,18 +30,20 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="{{ route('backend.settings.set') }}">基本信息</a></li>
-                    <li><a href="{{ route('backend.settings.link') }}">底部导航</a></li>
+                    <li><a href="{{ route('backend.settings.footnav') }}">底部导航</a></li>
+                    <li><a href="{{ route('backend.settings.link') }}">底部链接</a></li>
                 </ul>
             </li>
             <li class="treeview">
-                <a href="javascript:void();">
+                <a href="#">
                     <i class="fa fa-cogs"></i> <span>系统管理</span>
                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{ route('backend.systems.department') }}">组织管理</a></li>
-                    <li><a href="{{ route('backend.systems.user') }}">用户管理</a></li>
-                    <li><a href="{{ route('backend.systems.menu') }}">菜单管理</a></li>
+                    <li><a href="{{ route('backend.system.users') }}">用户管理</a></li>
+                    <li><a href="{{ route('backend.system.roles') }}">角色管理</a></li>
+                    <li><a href="{{ route('backend.system.actions') }}">权限与菜单管理</a></li>
+                    <li><a href="{{ route('backend.system.departments') }}">部门管理</a></li>
                 </ul>
             </li>
         </ul>

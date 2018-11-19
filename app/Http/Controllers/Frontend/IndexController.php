@@ -82,11 +82,35 @@ class IndexController extends FrontendController
                 -> limit(7)
                 -> get();
         }
+        // 底部导航
+        $footNavs = DB::table('footnavs')
+            -> select('id','name','code')
+            -> whereNull('deleted_at')
+            -> orderBy('weight','ASC')
+            -> limit(5)
+            -> get();
+        // 底部链接
+        $links = [];
+        foreach ($footNavs as $key => $val) {
+            $links[$key]['content'] = DB::table('links')
+                    -> select('name','link')
+                    -> whereNull('deleted_at')
+                    -> where('parent_id',$val -> id)
+                    -> orderBy('weight','ASC')
+                    -> orderBy('created_at', 'DESC')
+                    -> limit(10)
+                    -> get();
+            $links[$key]['code'] = $val -> code;
+        }
+
+
         return view('frontend.default.index', [
             'sections' => $sections,
             'contents' => $contents,
             'topCarouselNews' => $topCarouselNews,
             'topCommonNews' => $topCommonNews,
+            'footNavs' => $footNavs,
+            'links' => $links
         ]);
     }
 

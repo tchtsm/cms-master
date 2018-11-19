@@ -111,11 +111,82 @@
                     {{--</ul>--}}
                 {{--</li>--}}
                 <!-- User Account Menu -->
-                <li class="user user-menu"><a>{{ Session::get('name') }}</a></li>
-                <li class="user user-menu">
-                    <a href="{{ Route('backend.sign.out') }}">退出登录</a>
+                <li class="dropdown user user-menu">
+                    <!-- Menu Toggle Button -->
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <!-- The user image in the navbar-->
+                        <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                        <span class="hidden-xs">{{ Auth::user() -> name }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- The user image in the menu -->
+                        <li class="user-header">
+
+                            <p>
+                                用户名：{{ Auth::user() -> username }}<br>
+                                <small>Web Developer</small>
+                            </p>
+                        </li>
+                        <!-- Menu Body -->
+                        <!-- <li class="user-body">
+                            <div class="row">
+                                <div class="col-xs-4 text-center">
+                                    <a href="#">Followers</a>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <a href="#">Sales</a>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <a href="#">Friends</a>
+                                </div>
+                            </div>
+                        </li> -->
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <div class="pull-left">
+                                <button id="resetPwd" class="btn btn-default btn-flat">修改密码</button>
+                            </div>
+                            <div class="pull-right">
+                                <a href="{{ Route('backend.sign.out') }}" class="btn btn-default btn-flat">退出登录</a>
+                            </div>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
     </nav>
+    <div id="resetPwdDiv">
+        <div class="form form-horizontal">
+            <!--- pwd Field --->
+            <div class="form-group {{ $errors -> has('pwd') ? 'has-error' : '' }}">
+                {!! Form::label('pwd', '原密码(*):', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-9">
+                    <input type="password" id="pwd" class="form-control">
+                </div>
+            </div>
+            <div class="form-group {{ $errors -> has('newpwd') ? 'has-error' : '' }}">
+                {!! Form::label('newpwd', '新密码(*):', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-9">
+                    <input type="password" id="newpwd" class="form-control">
+                </div>
+            </div>
+            <div class="form-group {{ $errors -> has('newpwds') ? 'has-error' : '' }}">
+                {!! Form::label('newpwd', '确认密码(*):', ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-9">
+                    <input type="password" id="newpwd_confirm" class="form-control">
+                    <p id="msg" style="color:red;font-weight:bolder"></p>
+                </div>
+            </div>
+            <!-- submit -->
+            <div class="row">
+                <div class="col-md-offset-1 col-md-1">
+                    <button id="resetPwdSubmit" class="btn btn-sm btn-primary" data-url="{{ route('backend.sign.resetpwd') }}">保存</button>
+                </div>
+                <div class="col-md-6">
+                    <button id="resetPwdBack" class="btn btn-sm btn-default pull-right">退出</button>
+                </div>
+            </div>
+        </div>
+        {!! Form::close() !!}
+    </div>
 </header>

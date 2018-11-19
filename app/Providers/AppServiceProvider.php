@@ -50,7 +50,20 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // title
-        $title = 
+        $title = DB::table('sets')
+            -> select('title')
+            -> first();
+        view() -> composer('frontend.default.layouts.common', function ($view) use ($title) {
+            $view -> with('title', $title -> title);
+        });
+
+        //foot
+        $foot = DB::table('sets')
+            -> select('foot')
+            -> first();
+        view() -> composer('frontend.default.layouts.footer', function ($view) use ($foot) {
+            $view -> with('foot', $foot -> foot);
+        });
     }
 
 }

@@ -18,6 +18,7 @@ class ContentsController extends BackendController
 {
     public function list(Request $request)
     {
+        // dd($request -> session() -> get('userInfo') -> dep_id);
         $db_modules = DB::table('modules')
             -> select('id', 'name')
             -> whereNull('deleted_at')
@@ -47,7 +48,7 @@ class ContentsController extends BackendController
             })
             -> orderBy('contents.weight', 'ASC')
             -> orderBy('contents.created_at', 'DESC')
-            -> paginate(20);
+            -> paginate(self::PER_PAGE_RECORD_COUNT);
         return view('backend.contents.list', ['modules' => $modules, 'contents' => $contents, 'condition' => $this -> searchConditions]);
     }
 
@@ -141,6 +142,8 @@ class ContentsController extends BackendController
 
         $this -> validate($request, $rules, $messages);
 
+        // dd($request -> session() -> get('userInfo') -> id);
+
         $data = [
             'title' => $request -> title,
             'source' => $request -> source,
@@ -149,8 +152,11 @@ class ContentsController extends BackendController
             'thumb' => $request -> thumbnail,
             'weight' => $request -> weight,
             'abst' => $request -> abst,
+            'publish_by' => Auth::id(),
+            'dep_id' => Auth::user() -> dep_id,
             'content' => $request -> cont,
         ];
+
         if (!is_null($request -> section)) {
             $data['sec_id'] = $request -> section;
         }
@@ -200,7 +206,7 @@ class ContentsController extends BackendController
         } else {
             DB::beginTransaction();
             try {
-                $data['publish_by'] = 1;
+                // $data['publish_by'] = 1;
                 $cid = DB::table('contents') -> insertGetId($data);
                 $module_ids = [];
                 $m_ids = '';

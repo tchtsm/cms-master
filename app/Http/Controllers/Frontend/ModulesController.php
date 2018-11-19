@@ -10,6 +10,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ModulesController extends FrontendController
@@ -29,9 +30,19 @@ class ModulesController extends FrontendController
                 -> orderBy('contents.created_at', 'DESC')
                 -> limit(10)
                 -> paginate(10);
+            $type = 'list';
         } else {
+            if ($module_code == 'ztzl') {
+                $modules = DB::table('modules')
+                    -> select('code','thumb')
+                    -> whereNull('deleted_at')
+                    -> where('type','special')
+                    -> get();
+                return view('frontend.default.modules.special.list',
+                ['modules' => $modules,'module' => '专题专栏']);
+            }
             $module = DB::table('modules')
-                -> select('name','list_type')
+                -> select('name','type')
                 -> whereNull('deleted_at')
                 -> where('code', $module_code)
                 -> first();
@@ -39,7 +50,7 @@ class ModulesController extends FrontendController
                 abort(404);
             }
             $name = $module -> name;
-            $list_type = $module -> list_type;
+            $type = $module -> type == 'video' ? 'video.list' : 'list';
             $contents = DB::table('contents_modules')
                 -> select('contents.id', 'contents.title', 'contents.thumb', 'contents.abst', 'contents.created_at')
                 -> leftJoin('contents', 'contents.id', '=', 'contents_modules.c_id')
@@ -52,8 +63,23 @@ class ModulesController extends FrontendController
                 -> orderBy('contents.created_at', 'DESC')
                 -> paginate(10);
         }
-        return view('frontend.default.modules.'.$list_type.'.list',
+        return view('frontend.default.modules.'.$type,
             ['contents' => $contents, 'code' => $module_code, 'module' => $name]);
+    }
+
+    public function specialList(Request $Request)
+    {
+        $contents = DB::table('contents_modules')
+                -> select('contents.id', 'contents.title', 'contents.thumb', 'contents.abst', 'contents.created_at')
+                -> leftJoin('contents', 'contents.id', '=', 'contents_modules.c_id')
+                -> leftJoin('modules', 'modules.id', '=', 'contents_modules.m_id')
+                -> where('modules.code', $module_code)
+                -> whereNull('modules.deleted_at')
+                -> whereNull('contents.deleted_at')
+                -> whereNull('contents_modules.deleted_at')
+                -> orderBy('contents.weight', 'ASC')
+                -> orderBy('contents.created_at', 'DESC')
+                -> paginate(10);
     }
 
     public function show($module_code, $cid)

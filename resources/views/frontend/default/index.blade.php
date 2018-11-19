@@ -159,28 +159,25 @@
             <div class="site-navs-content">
                 <!-- Nav tabs -->
                 <ul class="site-navs-content-header nav nav-tabs" role="tablist">
+                    @foreach($footNavs as $footNav)
                     <li role="presentation">
-                        <a href="#zjw" aria-controls="zjw" role="tab" data-toggle="tab" class="text-black">中央纪委监委</a>
+                        <a href="#{{ $footNav -> code }}" aria-controls="{{ $footNav -> code }}" role="tab" data-toggle="tab" class="text-black">{{ $footNav -> name }}</a>
                     </li>
-                    <li role="presentation">
-                        <a href="#swxsjg" aria-controls="swxsjg" role="tab" data-toggle="tab" class="text-black">省委巡视结构</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#swpcjg" aria-controls="swpcjg" role="tab" data-toggle="tab" class="text-black">省委派出机构</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#szjw" aria-controls="szjw" role="tab" data-toggle="tab" class="text-black">市州纪委</a>
-                    </li>
+                    @endforeach
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="site-navs-content-main tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="zjw">
+                    @foreach($links as $link)
+                    <div role="tabpanel" class="tab-pane active" id="{{ $link['code'] }}">
                         <div class="text-center">
-                            <a class="text-black" href="http://www.ccdi.gov.cn/" target="_blank">中央纪委监委</a>
+                            @foreach($link['content'] as $val)
+                            <a class="text-black" href="{{ $val -> link }}" target="_blank">{{ $val -> name }}</a>
+                            @endforeach
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="swxsjg">
+                    @endforeach
+                    <!-- <div role="tabpanel" class="tab-pane" id="swxsjg">
                         <div class="text-center">
                             <a class="text-black" href="http://www.ccdi.gov.cn/" target="_blank">中央纪委监委</a>
                         </div>
@@ -219,7 +216,7 @@
                             <a class="text-black" href="http://www.gadis.gov.cn/" target="_blank">贵安新区纪委监委</a>
                         </div>
 
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

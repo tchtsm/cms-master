@@ -41,12 +41,8 @@ class SignController extends BackendController
         ];
         $this -> validate($request, $rules, $messages);
 
+
         if (Auth::attempt([$this -> username() => $request -> username, 'password' => $request -> password, 'deleted_at' => null])) {
-            $name = DB::table('users')
-                -> select('name')
-                -> where('username', $request -> username)
-                -> first();
-            $request->session()->put('name', $name -> name);
             return redirect(route('backend.index'));
         } else {
             return $this -> sendFailedLoginResponse($request);
@@ -59,11 +55,34 @@ class SignController extends BackendController
         return redirect(route('backend.sign.in'));
     }
 
+    public function doResetPwd (Request $request)
+    {
+        if (strlen($request -> newpwd) < 6) {
+            return '密码至少6位';
+        }
+        if ($request -> newpwd != $request -> newpwd_confirm) {
+            return '两次密码不一致';
+        }
+        // dd(bcrypt($request -> pwd));
+        if (Auth::attempt([$this->username() => Auth::user()->username,'password'=>$request -> pwd,'deleted_at'=>null])) {
+            try {
+                DB::table('users')
+                    -> where('id',Auth::id())
+                    -> update(['password' => bcrypt($request -> pwd)]);
+                return '修改成功';
+            } catch (\Exception $e) {
+                return '修改失败：'.$e -> getMessage();
+            }
+        } else {
+            return '修改失败：原密码不正确！';
+        }
+    }
+
 
     protected function sendFailedLoginResponse(Request $request)
     {
         throw ValidationException::withMessages([
-            $this->username() => [trans('auth.failed')],
+            $this->pwd() => [trans('auth.failed')],
         ]);
     }
 

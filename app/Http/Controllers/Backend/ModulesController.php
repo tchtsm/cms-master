@@ -65,7 +65,9 @@ class ModulesController extends BackendController
             'code' => 'required|max:10|min:2|unique:modules,code,'
                 . ($request -> has('id') ? $request -> id : 'NULL') . ',id,deleted_at,NULL',
             'desc' => 'required|max:255|min:2',
-            'weight' => 'required|numeric|max:1000|min:0'
+            'weight' => 'required|numeric|max:1000|min:0',
+            'type' => 'required|in:word,special,video,link',
+            'thumbnail' => 'required_if:type,special|max:255',
         ];
         $messages = [
             'name.required' => '请输入板块名称',
@@ -76,12 +78,16 @@ class ModulesController extends BackendController
             'code.max' => '板块代码长度不要超过:max',
             'code.min' => '板块代码长度不要少于:min',
             'code.unique' => '板块代码已存在',
+            'code.format' => '链接不正确',
             'desc.required' => '请输入描述信息',
             'desc.max' => '板块描述不要超过:max',
             'desc.min' => '板块描述不要少于:min',
             'weight.required' => '请输入板块权重',
             'weight.max' => '板块权重不要大于:max',
             'weight.min' => '板块权重不要小于:min',
+            'type.required' => '类型错误',
+            'thumbnail.required_if' => '图片没有上传',
+            'thumbnail.max' => '图片上传异常',
         ];
         $this -> validate($request, $rules, $messages);
 
@@ -89,8 +95,11 @@ class ModulesController extends BackendController
             'name' => $request -> name,
             'desc' => $request -> desc,
             'code' => $request -> code,
-            'weight' => $request -> weight
+            'type' => $request -> type,
+            'weight' => $request -> weight,
+            'thumb' => $request -> thumbnail,
         ];
+
         try {
             if ($request -> has('id')) {
                 DB::table('modules')

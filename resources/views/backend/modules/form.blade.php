@@ -1,10 +1,10 @@
 @extends('backend.layouts.layouts')
 @section('content')
-    <div class="box box-{{ is_null($user) ? 'primary' : 'info' }}">
+    <div class="box box-{{ isset($module) ? 'primary' : 'info' }}">
         <div class="box-header">
-            <h3 class="box-title">{{ is_null($user) ? '编辑' : '添加' }}用户</h3>
+            <h3 class="box-title">{{ isset($module) ? '编辑' : '添加' }}模块</h3>
         </div>
-        {!! Form::open(['url' => route('backend.systems.user.add'), 'method' => 'POST', 'class' => 'form-horizontal', 'role' => 'form']) !!}
+        {!! Form::open(['url' => route('backend.modules.store'), 'method' => 'POST', 'class' => 'form-horizontal', 'role' => 'form']) !!}
             <!-- class include {'form-horizontal'|'form-inline'} -->
             <!-- /.box-header -->
             <div class="box-body">
@@ -24,8 +24,41 @@
                     @endif
                 </div>
 
-                <!--- Code Field --->
-                <div class="form-group {{ $errors -> has('code') ? 'has-error' : '' }}">
+                <!--- Type Field --->
+                <div class="form-group {{ $errors -> has('type') ? 'has-error' : '' }}">
+                    <div class="col-md-offset-1 col-md-1">
+                        {!! Form::label('type', '模块类型:', ['class' => 'control-label']) !!}
+                    </div>
+                    <div class="col-md-6">
+                        <select name="type" class="form-control" id="type">
+                            <option id='word' value="word">普通模块</option>
+                            <option id='special' value="special">专题模块</option>
+                            <option id='video' value="video">视频模块</option>
+                            <option id='link' value="link">外链模块</option>
+                            @if(isset($module))
+                            <script>document.getElementById('{{ $module -> type }}').selected=true;</script>
+                            @endif
+                        </select>
+                        @if($errors -> has('type'))
+                            <span class="help-block form-help-block"><strong>{{ $errors -> first('type') }}</strong></span>
+                        @endif
+                    </div>
+                </div>
+
+                <!--- Thumbnail Field --->
+                <div style="display:none" class="form-group {{ $errors -> has('thumbnail') ? 'has-error' : '' }}" id="moduleThumbnail">
+                    {!! Form::label('thumbnail', '专题图(*):', ['class' => 'col-sm-2 control-label']) !!}
+                    <div class="col-sm-6">
+                        <input id="thumbnail-container" name="thumbnail-container" data-url="{{ route('backend.upload.thumbnail') }}" multiple type="file" accept="image/*">
+                        <input type="hidden" id="thumbnail" name="thumbnail" value="{{ isset($module) ? $module -> thumb : '' }}">
+                        @if($errors -> has('thumbnail'))
+                            <span class="help-block form-help-block"><strong>{{ $errors -> first('thumbnail') }}</strong></span>
+                        @endif
+                    </div>
+                </div>
+
+                <!--- Code/Link Field --->
+                <div class="form-group {{ $errors -> has('code') ? 'has-error' : '' }}" id="code">
                     <div class="col-md-offset-1 col-md-1">
                         {!! Form::label('code', '代码:', ['class' => 'control-label']) !!}
                     </div>
@@ -76,4 +109,7 @@
             </div>
         {!! Form::close() !!}
     </div>
+    <script>
+        var postThumbnail = "{{ isset($module) ? $module -> thumb : "" }}";
+    </script>
 @endsection

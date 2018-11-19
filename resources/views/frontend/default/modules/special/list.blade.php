@@ -5,31 +5,22 @@
             <div>
                 <ol class="breadcrumb">
                     <li><i class="fa fa-map-marker"></i>
-                        <a href="">首页</a>
+                        <a href="{{ route('index') }}">首页</a>
                     </li>
-                    <li class="active">专题专栏</li>
+                    <li class="active">{{ $module }}</li>
                 </ol>
             </div>
             <ul class="special-list">
                 <li>
-                    <a href="#">
-                        <img src="/images/special.png">
-                        <p>dbgnhg</p>
+                @foreach($modules as $key => $module)
+                    <a href="{{ route('module.list', ['module' => $module -> code]) }}">
+                        <img src="{{ $module -> thumb }}">
+                        <!-- <p>dbgnhg</p> -->
                     </a>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
-                </li><li>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
-                </li><li>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
-                </li><li>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
-                    <a href="#"><img src="/images/special.png"></a>
+                    @if(($key+1)%3==0)
+                    </li><li>
+                    @endif
+                @endforeach
                 </li>
             </ul>
         </section>
